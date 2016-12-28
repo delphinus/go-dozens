@@ -64,3 +64,5 @@ _testmain.go
 *.prof
 
 
+### custom
+/vendor
