@@ -10,4 +10,4 @@ test: ## Run tests only
 install: ## Install packages for dependencies
 	go get github.com/Masterminds/glide
 	glide install
-	cd .git/hooks && [ -L pre-commit ] || ln -s ../../src/scripts/git-hooks/pre-commit
+	[ -d .git/hooks ] && cd .git/hooks && [ -L pre-commit ] || ln -s ../../src/scripts/git-hooks/pre-commit
