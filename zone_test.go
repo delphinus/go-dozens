@@ -1,6 +1,7 @@
 package dozens
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -48,5 +49,28 @@ func TestDoZoneRequestBadJSON(t *testing.T) {
 
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("expected '%s', bug got '%s'", expected, result)
+	}
+}
+
+func TestDoZoneRequestValidResponse(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	method := "GET"
+	hogeURL := "http://hoge.com"
+	expected := `{"domain":[{"id":"hoge","name":"fuga"}]}`
+
+	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(http.StatusOK, expected))
+	req, _ := http.NewRequest(method, hogeURL, nil)
+
+	resultResp, _ := doZoneRequest(req)
+	result, err := json.Marshal(&resultResp)
+	if err != nil {
+		t.Errorf("error in Marshal: %v", err)
+		return
+	}
+
+	if string(result) != expected {
+		t.Errorf("expected '%+v', bug got '%+v'", expected, result)
 	}
 }
