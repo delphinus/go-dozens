@@ -12,10 +12,10 @@ import (
 )
 
 func TestDoZoneRequestInvalidRequest(t *testing.T) {
-	expected := "error in Do"
 	_, err := doZoneRequest(&http.Request{})
 	result := err.Error()
 
+	expected := "error in Do"
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("expected '%s', but got '%s'", expected, result)
 	}
@@ -32,11 +32,11 @@ func TestDoZoneRequestStatusNotOK(t *testing.T) {
 
 	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(badStatus, mockStr))
 	req, _ := http.NewRequest(method, hogeURL, nil)
-	expected := fmt.Sprintf("error body: %s", mockStr)
 
 	_, err := doZoneRequest(req)
 	result := errors.Cause(err).Error()
 
+	expected := fmt.Sprintf("error body: %s", mockStr)
 	if result != expected {
 		t.Errorf("expected '%s', bug got '%s'", expected, result)
 	}
@@ -52,11 +52,11 @@ func TestDoZoneRequestBadJSON(t *testing.T) {
 
 	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(http.StatusOK, badJSON))
 	req, _ := http.NewRequest(method, hogeURL, nil)
-	expected := "error in Decode"
 
 	_, err := doZoneRequest(req)
 	result := err.Error()
 
+	expected := "error in Decode"
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("expected '%s', bug got '%s'", expected, result)
 	}
@@ -68,8 +68,8 @@ func TestDoZoneRequestValidResponse(t *testing.T) {
 
 	method := "GET"
 	hogeURL := "http://hoge.com"
-	expected := `{"domain":[{"id":"hoge","name":"fuga"}]}`
 
+	expected := `{"domain":[{"id":"hoge","name":"fuga"}]}`
 	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(http.StatusOK, expected))
 	req, _ := http.NewRequest(method, hogeURL, nil)
 
