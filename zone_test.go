@@ -11,6 +11,16 @@ import (
 	"github.com/pkg/errors"
 )
 
+func TestDoZoneRequestInvalidRequest(t *testing.T) {
+	expected := "error in Do"
+	_, err := doZoneRequest(&http.Request{})
+	result := err.Error()
+
+	if strings.Index(result, expected) != 0 {
+		t.Errorf("expected '%s', but got '%s'", expected, result)
+	}
+}
+
 func TestDoZoneRequestStatusNotOK(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
