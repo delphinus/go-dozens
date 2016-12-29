@@ -16,8 +16,9 @@ func TestDoZoneRequestStatusNotOK(t *testing.T) {
 	method := "GET"
 	hogeURL := "http://hoge.com"
 	mockStr := "as a mock"
+	badStatus := http.StatusBadRequest
 
-	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(400, mockStr))
+	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(badStatus, mockStr))
 	req, _ := http.NewRequest(method, hogeURL, nil)
 	expected := fmt.Sprintf("error body: %s", mockStr)
 
