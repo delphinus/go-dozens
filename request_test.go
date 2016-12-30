@@ -45,6 +45,7 @@ func TestMakeGetWithError(t *testing.T) {
 		Base:  &url.URL{},
 		Chunk: "",
 	}
+	methodGet = "(" // invalid method rune
 	if _, err := MakeGet("", p); err == nil {
 		t.Errorf("MakeGet did not return error")
 	}
