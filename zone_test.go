@@ -55,20 +55,19 @@ func TestDoZoneRequestStatusNotOK(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	method := "GET"
 	hogeURL := "http://hoge.com"
 	mockStr := "as a mock"
 	badStatus := http.StatusBadRequest
 
-	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(badStatus, mockStr))
-	req, _ := http.NewRequest(method, hogeURL, nil)
+	httpmock.RegisterResponder(methodGet, hogeURL, httpmock.NewStringResponder(badStatus, mockStr))
+	req, _ := http.NewRequest(methodGet, hogeURL, nil)
 
 	_, err := doZoneRequest(req)
 	result := errors.Cause(err).Error()
 
 	expected := fmt.Sprintf("error body: %s", mockStr)
 	if result != expected {
-		t.Errorf("expected '%s', bug got '%s'", expected, result)
+		t.Errorf("expected '%s', but got '%s'", expected, result)
 	}
 }
 
@@ -88,7 +87,7 @@ func TestDoZoneRequestBadJSON(t *testing.T) {
 
 	expected := "error in Decode"
 	if strings.Index(result, expected) != 0 {
-		t.Errorf("expected '%s', bug got '%s'", expected, result)
+		t.Errorf("expected '%s', but got '%s'", expected, result)
 	}
 }
 
