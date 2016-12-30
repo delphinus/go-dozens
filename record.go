@@ -25,7 +25,7 @@ type record struct {
 func doRecordRequest(req *http.Request) (RecordResponse, error) {
 	recordResp := RecordResponse{[]record{}}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return recordResp, errors.Wrap(err, "error in Do")
 	}
