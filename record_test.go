@@ -99,3 +99,26 @@ func TestDoRecordRequestValidResponse(t *testing.T) {
 		t.Errorf("expected '%+v', bug got '%+v'", expected, string(result))
 	}
 }
+func TestDoRecordRequestEmptyResponse(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	method := "GET"
+	hogeURL := "http://hoge.com"
+
+	emptyResp := `[]`
+	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(http.StatusOK, emptyResp))
+	req, _ := http.NewRequest(method, hogeURL, nil)
+
+	resultResp, _ := doRecordRequest(req)
+	result, err := json.Marshal(&resultResp)
+	if err != nil {
+		t.Errorf("error in Marshal: %v", err)
+		return
+	}
+
+	expected := `{"record":[]}`
+	if string(result) != expected {
+		t.Errorf("expected '%+v', bug got '%+v'", expected, string(result))
+	}
+}
