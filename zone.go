@@ -18,10 +18,16 @@ type domain struct {
 	Name string `json:"name"`
 }
 
+type doer interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+var httpClient doer = http.DefaultClient
+
 func doZoneRequest(req *http.Request) (ZoneResponse, error) {
 	zoneResp := ZoneResponse{}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return zoneResp, errors.Wrap(err, "error in Do")
 	}
