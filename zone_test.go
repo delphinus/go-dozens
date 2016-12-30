@@ -112,6 +112,6 @@ func TestDoZoneRequestValidResponse(t *testing.T) {
 	}
 
 	if string(result) != expected {
-		t.Errorf("expected '%+v', bug got '%+v'", expected, result)
+		t.Errorf("expected '%+v', bug got '%+v'", expected, string(result))
 	}
 }
