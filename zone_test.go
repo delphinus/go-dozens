@@ -3,6 +3,7 @@ package dozens
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"testing"
@@ -19,6 +20,36 @@ func TestDoZoneRequestInvalidRequest(t *testing.T) {
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("expected '%s', but got '%s'", expected, result)
 	}
+}
+
+type mockedBody struct {
+	io.ReadCloser
+}
+
+func (b *mockedBody) Read(bytes []byte) (int, error) { return 0, errors.New("some error") }
+func (b *mockedBody) Close() error                   { return nil }
+
+type mockedClient struct{}
+
+func (c *mockedClient) Do(req *http.Request) (*http.Response, error) {
+	resp := http.Response{}
+	resp.Body = &mockedBody{}
+	return &resp, nil
+}
+
+func TestDoZoneRequestIOError(t *testing.T) {
+	originalClient := httpClient
+	httpClient = &mockedClient{}
+
+	_, err := doZoneRequest(&http.Request{})
+	result := err.Error()
+
+	expected := "error in ReadAll"
+	if strings.Index(result, expected) != 0 {
+		t.Errorf("expected '%s', but got '%s'", expected, result)
+	}
+
+	httpClient = originalClient
 }
 
 func TestDoZoneRequestStatusNotOK(t *testing.T) {
