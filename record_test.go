@@ -3,7 +3,6 @@ package dozens
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 	"testing"
@@ -12,8 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func TestDoZoneRequestInvalidRequest(t *testing.T) {
-	_, err := doZoneRequest(&http.Request{})
+func TestDoRecordRequestInvalidRequest(t *testing.T) {
+	_, err := doRecordRequest(&http.Request{})
 	result := err.Error()
 
 	expected := "error in Do"
@@ -22,26 +21,11 @@ func TestDoZoneRequestInvalidRequest(t *testing.T) {
 	}
 }
 
-type mockedBody struct {
-	io.ReadCloser
-}
-
-func (b *mockedBody) Read(bytes []byte) (int, error) { return 0, errors.New("some error") }
-func (b *mockedBody) Close() error                   { return nil }
-
-type mockedClient struct{}
-
-func (c *mockedClient) Do(req *http.Request) (*http.Response, error) {
-	resp := http.Response{}
-	resp.Body = &mockedBody{}
-	return &resp, nil
-}
-
-func TestDoZoneRequestIOError(t *testing.T) {
+func TestDoRecordRequestIOError(t *testing.T) {
 	originalClient := httpClient
 	httpClient = &mockedClient{}
 
-	_, err := doZoneRequest(&http.Request{})
+	_, err := doRecordRequest(&http.Request{})
 	result := err.Error()
 
 	expected := "error in ReadAll"
@@ -52,7 +36,7 @@ func TestDoZoneRequestIOError(t *testing.T) {
 	httpClient = originalClient
 }
 
-func TestDoZoneRequestStatusNotOK(t *testing.T) {
+func TestDoRecordRequestStatusNotOK(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -64,7 +48,7 @@ func TestDoZoneRequestStatusNotOK(t *testing.T) {
 	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(badStatus, mockStr))
 	req, _ := http.NewRequest(method, hogeURL, nil)
 
-	_, err := doZoneRequest(req)
+	_, err := doRecordRequest(req)
 	result := errors.Cause(err).Error()
 
 	expected := fmt.Sprintf("error body: %s", mockStr)
@@ -73,7 +57,7 @@ func TestDoZoneRequestStatusNotOK(t *testing.T) {
 	}
 }
 
-func TestDoZoneRequestBadJSON(t *testing.T) {
+func TestDoRecordRequestBadJSON(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -84,7 +68,7 @@ func TestDoZoneRequestBadJSON(t *testing.T) {
 	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(http.StatusOK, badJSON))
 	req, _ := http.NewRequest(method, hogeURL, nil)
 
-	_, err := doZoneRequest(req)
+	_, err := doRecordRequest(req)
 	result := err.Error()
 
 	expected := "error in Decode"
@@ -93,24 +77,47 @@ func TestDoZoneRequestBadJSON(t *testing.T) {
 	}
 }
 
-func TestDoZoneRequestValidResponse(t *testing.T) {
+func TestDoRecordRequestValidResponse(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	method := "GET"
 	hogeURL := "http://hoge.com"
 
-	expected := `{"domain":[{"id":"hoge","name":"fuga"}]}`
+	expected := `{"record":[{"id":"hoge","name":"fuga","type":"A","prio":"10","content":"192.168.0.1","ttl":"10"}]}`
 	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(http.StatusOK, expected))
 	req, _ := http.NewRequest(method, hogeURL, nil)
 
-	resultResp, _ := doZoneRequest(req)
+	resultResp, _ := doRecordRequest(req)
 	result, err := json.Marshal(&resultResp)
 	if err != nil {
 		t.Errorf("error in Marshal: %v", err)
 		return
 	}
 
+	if string(result) != expected {
+		t.Errorf("expected '%+v', bug got '%+v'", expected, string(result))
+	}
+}
+func TestDoRecordRequestEmptyResponse(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	method := "GET"
+	hogeURL := "http://hoge.com"
+
+	emptyResp := `[]`
+	httpmock.RegisterResponder(method, hogeURL, httpmock.NewStringResponder(http.StatusOK, emptyResp))
+	req, _ := http.NewRequest(method, hogeURL, nil)
+
+	resultResp, _ := doRecordRequest(req)
+	result, err := json.Marshal(&resultResp)
+	if err != nil {
+		t.Errorf("error in Marshal: %v", err)
+		return
+	}
+
+	expected := `{"record":[]}`
 	if string(result) != expected {
 		t.Errorf("expected '%+v', bug got '%+v'", expected, string(result))
 	}

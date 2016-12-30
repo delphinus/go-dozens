@@ -8,19 +8,23 @@ import (
 	"github.com/pkg/errors"
 )
 
+var methodGet = "GET"
+var methodPost = "POST"
+var methodDelete = "DELETE"
+
 // MakeGet returns request for dozens
 func MakeGet(token string, p endpoint.Endpoint) (*http.Request, error) {
-	return makeRequest("GET", token, p, nil)
+	return makeRequest(methodGet, token, p, nil)
 }
 
 // MakePost returns request for dozens
 func MakePost(token string, p endpoint.Endpoint, body io.Reader) (*http.Request, error) {
-	return makeRequest("POST", token, p, body)
+	return makeRequest(methodPost, token, p, body)
 }
 
 // MakeDelete returns request for dozens
 func MakeDelete(token string, p endpoint.Endpoint) (*http.Request, error) {
-	return makeRequest("DELETE", token, p, nil)
+	return makeRequest(methodDelete, token, p, nil)
 }
 
 func makeRequest(method, token string, p endpoint.Endpoint, body io.Reader) (*http.Request, error) {

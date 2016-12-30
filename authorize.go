@@ -18,14 +18,14 @@ type AuthorizeResponse struct {
 func GetAuthorize(key, user string) (AuthorizeResponse, error) {
 	authorizeResp := AuthorizeResponse{}
 
-	req, err := http.NewRequest("GET", endpoint.Authorize().String(), nil)
+	req, err := http.NewRequest(methodGet, endpoint.Authorize().String(), nil)
 	if err != nil {
 		return authorizeResp, errors.Wrap(err, "error in NewRequest")
 	}
 	req.Header.Set("X-Auth-Key", key)
 	req.Header.Set("X-Auth-User", user)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return authorizeResp, errors.Wrap(err, "error in Do")
 	}
