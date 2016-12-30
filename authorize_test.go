@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/delphinus/go-dozens/endpoint"
+	"github.com/jarcoal/httpmock"
 )
 
 func TestGetAuthorizeWithNewRequestError(t *testing.T) {
@@ -50,6 +53,24 @@ func TestGetAuthorizeWithReadAllError(t *testing.T) {
 	result := err.Error()
 
 	expected := "error in ReadAll"
+	if strings.Index(result, expected) != 0 {
+		t.Errorf("expected '%s', but got '%s'", expected, result)
+	}
+}
+
+func TestGetAuthorizeWithErrorResponse(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	url := endpoint.Authorize().String()
+	validStatus := http.StatusOK
+	invalidJSON := "("
+	httpmock.RegisterResponder(methodGet, url, httpmock.NewStringResponder(validStatus, invalidJSON))
+
+	_, err := GetAuthorize("", "")
+	result := err.Error()
+
+	expected := "error in Decode"
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("expected '%s', but got '%s'", expected, result)
 	}
