@@ -20,4 +20,4 @@ test:
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/golang
     - cat $TEST_FILE | go-junit-report > $CIRCLE_TEST_REPORTS/golang/junit.xml
-    - goveralls -coverprofile=$COVERAGE -service=circle-ci -repotoken=$COVERALLS_TOKEN
+    - cd $REPO_PATH && goveralls -coverprofile=$COVERAGE -service=circle-ci -repotoken=$COVERALLS_TOKEN
