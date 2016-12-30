@@ -24,6 +24,7 @@ func TestDoRecordRequestInvalidRequest(t *testing.T) {
 func TestDoRecordRequestIOError(t *testing.T) {
 	originalClient := httpClient
 	httpClient = &mockedClient{}
+	defer func() { httpClient = originalClient }()
 
 	_, err := doRecordRequest(&http.Request{})
 	result := err.Error()
@@ -32,8 +33,6 @@ func TestDoRecordRequestIOError(t *testing.T) {
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("expected '%s', but got '%s'", expected, result)
 	}
-
-	httpClient = originalClient
 }
 
 func TestDoRecordRequestStatusNotOK(t *testing.T) {

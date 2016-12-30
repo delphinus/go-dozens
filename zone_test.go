@@ -40,6 +40,7 @@ func (c *mockedClient) Do(req *http.Request) (*http.Response, error) {
 func TestDoZoneRequestIOError(t *testing.T) {
 	originalClient := httpClient
 	httpClient = &mockedClient{}
+	defer func() { httpClient = originalClient }()
 
 	_, err := doZoneRequest(&http.Request{})
 	result := err.Error()
@@ -48,8 +49,6 @@ func TestDoZoneRequestIOError(t *testing.T) {
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("expected '%s', but got '%s'", expected, result)
 	}
-
-	httpClient = originalClient
 }
 
 func TestDoZoneRequestStatusNotOK(t *testing.T) {
