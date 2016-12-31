@@ -53,10 +53,8 @@ func ZoneUpdate(token, zoneID, mailAddress string) (ZoneResponse, error) {
 	zoneResp := ZoneResponse{}
 	body := ZoneUpdateBody{mailAddress}
 
-	bodyJSON, err := json.Marshal(body)
-	if err != nil {
-		return zoneResp, errors.Wrap(err, "error in Marshal")
-	}
+	// ZoneUpdateBody must not cause error from json.Marshal
+	bodyJSON, _ := json.Marshal(body)
 
 	req, err := MakePost(token, endpoint.ZoneUpdate(zoneID), bytes.NewBuffer(bodyJSON))
 	if err != nil {
