@@ -41,7 +41,7 @@ func RecordCreate(token string, body RecordCreateBody) (RecordResponse, error) {
 
 	req, err := MakePost(token, endpoint.RecordCreate(), bytes.NewBuffer(bodyJSON))
 	if err != nil {
-		return recordResp, errors.Wrap(err, "error in MakeGet")
+		return recordResp, errors.Wrap(err, "error in MakePost")
 	}
 
 	return doRecordRequest(req)
@@ -73,7 +73,7 @@ func RecordUpdate(token string, recordID string, body RecordUpdateBody) (RecordR
 
 	req, err := MakePost(token, endpoint.RecordUpdate(recordID), bytes.NewBuffer(bodyJSON))
 	if err != nil {
-		return RecordResponse{}, errors.Wrap(err, "error in MakeUpdate")
+		return RecordResponse{}, errors.Wrap(err, "error in MakePost")
 	}
 
 	return doRecordRequest(req)
