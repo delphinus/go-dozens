@@ -58,7 +58,7 @@ func ZoneUpdate(token, zoneID, mailAddress string) (ZoneResponse, error) {
 
 	req, err := MakePost(token, endpoint.ZoneUpdate(zoneID), bytes.NewBuffer(bodyJSON))
 	if err != nil {
-		return zoneResp, errors.Wrap(err, "error in MakeGet")
+		return zoneResp, errors.Wrap(err, "error in MakePost")
 	}
 
 	return doZoneRequest(req)
@@ -68,7 +68,7 @@ func ZoneUpdate(token, zoneID, mailAddress string) (ZoneResponse, error) {
 func ZoneDelete(token, zoneID string) (ZoneResponse, error) {
 	req, err := MakeDelete(token, endpoint.ZoneDelete(zoneID))
 	if err != nil {
-		return ZoneResponse{}, errors.Wrap(err, "error in MakeGet")
+		return ZoneResponse{}, errors.Wrap(err, "error in MakeDelete")
 	}
 
 	return doZoneRequest(req)
