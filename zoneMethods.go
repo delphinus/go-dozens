@@ -32,10 +32,8 @@ type ZoneCreateBody struct {
 func ZoneCreate(token string, body ZoneCreateBody) (ZoneResponse, error) {
 	zoneResp := ZoneResponse{}
 
-	bodyJSON, err := json.Marshal(body)
-	if err != nil {
-		return zoneResp, errors.Wrap(err, "error in Marshal")
-	}
+	// ZoneCreateBody must not cause error from json.Marshal
+	bodyJSON, _ := json.Marshal(body)
 
 	req, err := MakePost(token, endpoint.ZoneCreate(), bytes.NewBuffer(bodyJSON))
 	if err != nil {
