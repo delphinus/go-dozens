@@ -26,6 +26,43 @@ func (m dozensMock) Do(reqFunc func() (interface{}, error)) (interface{}, error)
 	return reqFunc()
 }
 
+var validZoneResponse = ZoneResponse{
+	Domain: []domain{
+		domain{ID: "hoge", Name: "fuga"},
+	},
+}
+
+func TestZoneListWithError(t *testing.T) {
+	originalMethodGet := methodGet
+	methodGet = "(" // invalid method
+	defer func() { methodGet = originalMethodGet }()
+
+	_, err := ZoneList("")
+
+	expected := "error in MakeGet"
+	result := err.Error()
+	if strings.Index(result, expected) != 0 {
+		t.Errorf("error does not found: %s", result)
+	}
+}
+
+func TestZoneListValidResponse(t *testing.T) {
+	mock := dozensMock{
+		Method:   methodGet,
+		URL:      endpoint.ZoneList().String(),
+		Status:   http.StatusOK,
+		Response: validZoneResponse,
+	}
+
+	_, err := mock.Do(func() (interface{}, error) {
+		return ZoneList("")
+	})
+
+	if err != nil {
+		t.Errorf("error: %v", err)
+	}
+}
+
 func TestZoneCreateWithError(t *testing.T) {
 	originalMethodPost := methodPost
 	methodPost = "(" // invalid method
@@ -41,12 +78,6 @@ func TestZoneCreateWithError(t *testing.T) {
 }
 
 func TestZoneCreateValidResponse(t *testing.T) {
-	validZoneResponse := ZoneResponse{
-		Domain: []domain{
-			domain{ID: "hoge", Name: "fuga"},
-		},
-	}
-
 	mock := dozensMock{
 		Method:   methodPost,
 		URL:      endpoint.ZoneCreate().String(),
