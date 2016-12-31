@@ -43,6 +43,7 @@ func TestMakeDelete(t *testing.T) {
 func TestMakeGetWithError(t *testing.T) {
 	originalMethodGet := methodGet
 	methodGet = "(" // invalid method rune
+	defer func() { methodGet = originalMethodGet }()
 
 	p := endpoint.Endpoint{
 		Base:  &url.URL{},
@@ -51,6 +52,4 @@ func TestMakeGetWithError(t *testing.T) {
 	if _, err := MakeGet("", p); err == nil {
 		t.Errorf("MakeGet did not return error")
 	}
-
-	methodGet = originalMethodGet
 }

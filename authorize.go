@@ -31,13 +31,16 @@ func GetAuthorize(key, user string) (AuthorizeResponse, error) {
 	}
 	defer resp.Body.Close()
 
-	result, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return authorizeResp, errors.Wrap(err, "error in ReadAll")
+	if resp.StatusCode != http.StatusOK {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return authorizeResp, errors.Wrap(err, "error in ReadAll")
+		}
+		return authorizeResp, errors.Errorf("error body: %s", body)
 	}
 
-	if err := json.Unmarshal(result, &authorizeResp); err != nil {
-		return authorizeResp, errors.Wrap(err, "error in Unmarshal")
+	if err := json.NewDecoder(resp.Body).Decode(&authorizeResp); err != nil {
+		return authorizeResp, errors.Wrap(err, "error in Decode")
 	}
 
 	return authorizeResp, nil
