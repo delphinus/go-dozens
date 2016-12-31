@@ -93,3 +93,34 @@ func TestZoneCreateValidResponse(t *testing.T) {
 		t.Errorf("error: %v", err)
 	}
 }
+
+func TestZoneUpdateWithError(t *testing.T) {
+	originalMethodPost := methodPost
+	methodPost = "(" // invalid method
+	defer func() { methodPost = originalMethodPost }()
+
+	_, err := ZoneUpdate("", "", "")
+
+	expected := "error in MakePost"
+	result := err.Error()
+	if strings.Index(result, expected) != 0 {
+		t.Errorf("error does not found: %s", result)
+	}
+}
+
+func TestZoneUpdateValidResponse(t *testing.T) {
+	mock := dozensMock{
+		Method:   methodPost,
+		URL:      endpoint.ZoneUpdate("").String(),
+		Status:   http.StatusOK,
+		Response: validZoneResponse,
+	}
+
+	_, err := mock.Do(func() (interface{}, error) {
+		return ZoneUpdate("", "", "")
+	})
+
+	if err != nil {
+		t.Errorf("error: %v", err)
+	}
+}
