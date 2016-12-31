@@ -95,3 +95,26 @@ func TestGetAuthorizeStatusNotOK(t *testing.T) {
 		t.Errorf("expected '%s',but got '%s'", expected, result)
 	}
 }
+
+func TestGetAuthorizeValidResponse(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	url := endpoint.Authorize().String()
+	validStatus := http.StatusOK
+	validResp := AuthorizeResponse{"hoge"}
+
+	responder, _ := httpmock.NewJsonResponder(validStatus, &validResp)
+	httpmock.RegisterResponder(methodGet, url, responder)
+
+	resp, err := GetAuthorize("", "")
+	if err != nil {
+		t.Errorf("error got: %v", err)
+	}
+
+	result := resp.AuthToken
+	expected := validResp.AuthToken
+	if result != expected {
+		t.Errorf("expected '%s', but got '%s'", expected, result)
+	}
+}
