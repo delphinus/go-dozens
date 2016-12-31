@@ -1,7 +1,6 @@
 package dozens
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -34,7 +33,7 @@ func TestZoneCreateWithError(t *testing.T) {
 
 	_, err := ZoneCreate("", ZoneCreateBody{})
 
-	expected := fmt.Sprintf("error in MakePost")
+	expected := "error in MakePost"
 	result := err.Error()
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("error does not found: %s", result)
