@@ -57,7 +57,7 @@ func RecordDelete(token, recordID string) (RecordResponse, error) {
 
 // RecordUpdateBody means post data for `update` request
 type RecordUpdateBody struct {
-	Prio    uint   `json:"prio,omitempty"`
+	Prio    string `json:"prio,omitempty"`
 	Content string `json:"content,omitempty"`
 	TTL     string `json:"ttl,omitempty"`
 }
