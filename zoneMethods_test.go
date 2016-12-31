@@ -1,7 +1,9 @@
 package dozens
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/delphinus/go-dozens/endpoint"
@@ -29,6 +31,20 @@ func zoneMock(options zoneMockOptions) (ZoneResponse, error) {
 	httpmock.RegisterResponder(options.Method, options.URL, responder)
 
 	return options.DoRequest()
+}
+
+func TestZoneCreateWithError(t *testing.T) {
+	originalMethodPost := methodPost
+	methodPost = "(" // invalid method
+	defer func() { methodPost = originalMethodPost }()
+
+	_, err := ZoneCreate("", ZoneCreateBody{})
+
+	expected := fmt.Sprintf("error in MakePost")
+	result := err.Error()
+	if strings.Index(result, expected) != 0 {
+		t.Errorf("error does not found: %s", result)
+	}
 }
 
 func TestZoneCreateValidResponse(t *testing.T) {
