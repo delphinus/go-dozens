@@ -38,7 +38,7 @@ func doZoneRequest(req *http.Request) (ZoneResponse, error) {
 		if err != nil {
 			return zoneResp, errors.Wrap(err, "error in ReadAll")
 		}
-		return zoneResp, errors.Errorf("error body: %s", body)
+		return zoneResp, errors.Errorf("error status: %s, body: %s", resp.Status, body)
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&zoneResp); err != nil {
