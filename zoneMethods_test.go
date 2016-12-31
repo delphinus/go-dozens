@@ -120,3 +120,33 @@ func TestZoneUpdateValidResponse(t *testing.T) {
 		t.Errorf("error: %v", err)
 	}
 }
+
+func TestZoneDeleteWithError(t *testing.T) {
+	originalMethodDelete := methodDelete
+	methodDelete = "(" // invalid method
+	defer func() { methodDelete = originalMethodDelete }()
+
+	_, err := ZoneDelete("", "")
+
+	expected := "error in MakeDelete"
+	result := err.Error()
+	if strings.Index(result, expected) != 0 {
+		t.Errorf("error does not found: %s", result)
+	}
+}
+
+func TestZoneDeleteValidResponse(t *testing.T) {
+	mock := dozensMock{
+		Method:   methodDelete,
+		URL:      endpoint.ZoneDelete("").String(),
+		Response: validZoneResponse,
+	}
+
+	_, err := mock.Do(func() (interface{}, error) {
+		return ZoneDelete("", "")
+	})
+
+	if err != nil {
+		t.Errorf("error: %v", err)
+	}
+}
