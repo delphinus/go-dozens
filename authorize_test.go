@@ -1,13 +1,14 @@
 package dozens
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
 
 	"github.com/delphinus/go-dozens/endpoint"
 	"github.com/jarcoal/httpmock"
+	"github.com/pkg/errors"
 )
 
 func TestGetAuthorizeWithNewRequestError(t *testing.T) {
@@ -73,5 +74,24 @@ func TestGetAuthorizeWithErrorResponse(t *testing.T) {
 	expected := "error in Decode"
 	if strings.Index(result, expected) != 0 {
 		t.Errorf("expected '%s', but got '%s'", expected, result)
+	}
+}
+
+func TestGetAuthorizeStatusNotOK(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	url := endpoint.Authorize().String()
+	invalidStatus := http.StatusBadRequest
+	mockStr := "as a mock"
+
+	httpmock.RegisterResponder(methodGet, url, httpmock.NewStringResponder(invalidStatus, mockStr))
+
+	_, err := GetAuthorize("", "")
+	result := errors.Cause(err).Error()
+
+	expected := fmt.Sprintf("error body: %s", mockStr)
+	if result != expected {
+		t.Errorf("expected '%s',but got '%s'", expected, result)
 	}
 }
