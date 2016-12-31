@@ -37,7 +37,7 @@ func ZoneCreate(token string, body ZoneCreateBody) (ZoneResponse, error) {
 
 	req, err := MakePost(token, endpoint.ZoneCreate(), bytes.NewBuffer(bodyJSON))
 	if err != nil {
-		return zoneResp, errors.Wrap(err, "error in MakeGet")
+		return zoneResp, errors.Wrap(err, "error in MakePost")
 	}
 
 	return doZoneRequest(req)
