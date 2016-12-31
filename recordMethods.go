@@ -34,14 +34,12 @@ type RecordCreateBody struct {
 func RecordCreate(token string, body RecordCreateBody) (RecordResponse, error) {
 	recordResp := RecordResponse{}
 
-	bodyJSON, err := json.Marshal(body)
-	if err != nil {
-		return recordResp, errors.Wrap(err, "error in Marshal")
-	}
+	// RecordCreateBody does not occur error in json.Marshal
+	bodyJSON, _ := json.Marshal(body)
 
 	req, err := MakePost(token, endpoint.RecordCreate(), bytes.NewBuffer(bodyJSON))
 	if err != nil {
-		return recordResp, errors.Wrap(err, "error in MakeGet")
+		return recordResp, errors.Wrap(err, "error in MakePost")
 	}
 
 	return doRecordRequest(req)
@@ -59,21 +57,19 @@ func RecordDelete(token, recordID string) (RecordResponse, error) {
 
 // RecordUpdateBody means post data for `update` request
 type RecordUpdateBody struct {
-	Prio    uint   `json:"prio,omitempty"`
+	Prio    string `json:"prio,omitempty"`
 	Content string `json:"content,omitempty"`
 	TTL     string `json:"ttl,omitempty"`
 }
 
 // RecordUpdate updates record and returns records list
 func RecordUpdate(token string, recordID string, body RecordUpdateBody) (RecordResponse, error) {
-	bodyJSON, err := json.Marshal(body)
-	if err != nil {
-		return RecordResponse{}, errors.Wrap(err, "error in Marshal")
-	}
+	// RecordUpdateBody does not occur error in json.Marshal
+	bodyJSON, _ := json.Marshal(body)
 
 	req, err := MakePost(token, endpoint.RecordUpdate(recordID), bytes.NewBuffer(bodyJSON))
 	if err != nil {
-		return RecordResponse{}, errors.Wrap(err, "error in MakeUpdate")
+		return RecordResponse{}, errors.Wrap(err, "error in MakePost")
 	}
 
 	return doRecordRequest(req)

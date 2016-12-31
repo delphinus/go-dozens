@@ -65,7 +65,7 @@ func TestDoZoneRequestStatusNotOK(t *testing.T) {
 	_, err := doZoneRequest(req)
 	result := errors.Cause(err).Error()
 
-	expected := fmt.Sprintf("error body: %s", mockStr)
+	expected := fmt.Sprintf("error status: %d, body: %s", http.StatusBadRequest, mockStr)
 	if result != expected {
 		t.Errorf("expected '%s', but got '%s'", expected, result)
 	}
