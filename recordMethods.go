@@ -34,10 +34,8 @@ type RecordCreateBody struct {
 func RecordCreate(token string, body RecordCreateBody) (RecordResponse, error) {
 	recordResp := RecordResponse{}
 
-	bodyJSON, err := json.Marshal(body)
-	if err != nil {
-		return recordResp, errors.Wrap(err, "error in Marshal")
-	}
+	// RecordCreateBody does not occur error in json.Marshal
+	bodyJSON, _ := json.Marshal(body)
 
 	req, err := MakePost(token, endpoint.RecordCreate(), bytes.NewBuffer(bodyJSON))
 	if err != nil {
@@ -66,10 +64,8 @@ type RecordUpdateBody struct {
 
 // RecordUpdate updates record and returns records list
 func RecordUpdate(token string, recordID string, body RecordUpdateBody) (RecordResponse, error) {
-	bodyJSON, err := json.Marshal(body)
-	if err != nil {
-		return RecordResponse{}, errors.Wrap(err, "error in Marshal")
-	}
+	// RecordUpdateBody does not occur error in json.Marshal
+	bodyJSON, _ := json.Marshal(body)
 
 	req, err := MakePost(token, endpoint.RecordUpdate(recordID), bytes.NewBuffer(bodyJSON))
 	if err != nil {
