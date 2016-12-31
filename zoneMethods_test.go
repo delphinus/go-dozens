@@ -12,7 +12,6 @@ import (
 type dozensMock struct {
 	Method   string
 	URL      string
-	Status   int
 	Response interface{}
 }
 
@@ -20,7 +19,7 @@ func (m dozensMock) Do(reqFunc func() (interface{}, error)) (interface{}, error)
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	responder, _ := httpmock.NewJsonResponder(m.Status, m.Response)
+	responder, _ := httpmock.NewJsonResponder(http.StatusOK, m.Response)
 	httpmock.RegisterResponder(m.Method, m.URL, responder)
 
 	return reqFunc()
@@ -50,7 +49,6 @@ func TestZoneListValidResponse(t *testing.T) {
 	mock := dozensMock{
 		Method:   methodGet,
 		URL:      endpoint.ZoneList().String(),
-		Status:   http.StatusOK,
 		Response: validZoneResponse,
 	}
 
@@ -81,7 +79,6 @@ func TestZoneCreateValidResponse(t *testing.T) {
 	mock := dozensMock{
 		Method:   methodPost,
 		URL:      endpoint.ZoneCreate().String(),
-		Status:   http.StatusOK,
 		Response: validZoneResponse,
 	}
 
@@ -112,7 +109,6 @@ func TestZoneUpdateValidResponse(t *testing.T) {
 	mock := dozensMock{
 		Method:   methodPost,
 		URL:      endpoint.ZoneUpdate("").String(),
-		Status:   http.StatusOK,
 		Response: validZoneResponse,
 	}
 
