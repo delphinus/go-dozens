@@ -10,7 +10,8 @@ test: ## Run tests only
 	go test $$(glide novendor) $(OPT)
 
 test-coverage: ## Run tests and show coverage in browser
-	go test -v -coverprofile=$(COVERAGE) -covermode=count
+	go get github.com/haya14busa/goverage
+	goverage -v -coverprofile=$(COVERAGE) -covermode=count
 	go tool cover -html=$(COVERAGE)
 
 install: ## Install packages for dependencies
