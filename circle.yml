@@ -17,7 +17,7 @@ dependencies:
 
 test:
   override:
-    - cd $REPO_PATH && set -o pipefail && goverage -v -cover -race -coverprofile=$COVERAGE | tee -a $TEST_FILE
+    - cd $REPO_PATH && set -o pipefail && goverage -v -covermode=count -coverprofile=$COVERAGE | tee -a $TEST_FILE
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/golang
     - cat $TEST_FILE | go-junit-report > $CIRCLE_TEST_REPORTS/golang/junit.xml
