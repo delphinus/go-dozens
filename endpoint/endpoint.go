@@ -9,10 +9,7 @@ import (
 var baseURL *url.URL
 
 func init() {
-	url, err := url.Parse("http://dozens.jp/api")
-	if err != nil {
-		panic(err)
-	}
+	url, _ := url.Parse("http://dozens.jp/api")
 	baseURL = url
 }
 
@@ -28,11 +25,11 @@ func NewEndpoint(chunk string) Endpoint {
 }
 
 func (p Endpoint) String() string {
-	u, err := url.Parse(p.Base.String())
-	if err != nil {
-		panic(err)
+	u := url.URL{
+		Scheme: p.Base.Scheme,
+		Host:   p.Base.Host,
+		Path:   strings.Join([]string{p.Base.Path, p.Chunk}, "/"),
 	}
-	u.Path = strings.Join([]string{u.Path, p.Chunk}, "/")
 	return u.String()
 }
 
