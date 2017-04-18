@@ -61,7 +61,7 @@ The list below is the same as [the official documents for API][api].
 
 * `RecordList(token, zoneName)`
 * `RecordCreate(token, RecordCreateBody{})`
-* `RecordUpdate(token, RecordUpdateBody{})`
+* `RecordUpdate(token, recordID, RecordUpdateBody{})`
 * `RecordDelete(token, recordID)`
 
 ## Tool
