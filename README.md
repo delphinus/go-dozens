@@ -17,34 +17,34 @@ fully tested and has much reliability.
 
 1. Get token
 
-  ```go
-  import "github.com/delphinus/go-dozens"
+    ```go
+    import "github.com/delphinus/go-dozens"
 
-  const (
-    DozensKey = "hogehoge"  // API Key from Dozens
-    DozensUser = "fugafuga" // Dozens ID
-  )
+    const (
+      DozensKey = "hogehoge"  // API Key from Dozens
+      DozensUser = "fugafuga" // Dozens ID
+    )
 
-  resp, err := dozens.GetAuthorize(DozensKey, DozensUser)
-  if err != nil {
-    panic(err)
-  }
+    resp, err := dozens.GetAuthorize(DozensKey, DozensUser)
+    if err != nil {
+      panic(err)
+    }
 
-  token := resp.AuthToken
-  ```
+    token := resp.AuthToken
+    ```
 
 2. Call API methods
 
-  ```go
-  zone, err := dozens.ZoneList(token)
-  if err != nil {
-    return panic(err)
-  }
+    ```go
+    zone, err := dozens.ZoneList(token)
+    if err != nil {
+      return panic(err)
+    }
 
-  fmt.Printf("%+v", zone) // {Domain:[{ID:12345 Name:example.com}]}
-  ```
+    fmt.Printf("%+v", zone) // {Domain:[{ID:12345 Name:example.com}]}
+    ```
 
-  That's all!
+    That's all!
 
 ## Available Methods
 
