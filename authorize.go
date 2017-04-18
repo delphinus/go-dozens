@@ -29,7 +29,7 @@ func GetAuthorize(key, user string) (AuthorizeResponse, error) {
 	if err != nil {
 		return authorizeResp, errors.Wrap(err, "error in Do")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		body, err := ioutil.ReadAll(resp.Body)

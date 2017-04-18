@@ -29,7 +29,7 @@ func doRecordRequest(req *http.Request) (RecordResponse, error) {
 	if err != nil {
 		return recordResp, errors.Wrap(err, "error in Do")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
