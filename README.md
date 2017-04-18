@@ -52,7 +52,7 @@ The list below is the same as [the official documents for API][api].
 
 ### zones
 
-* `ZoneList(token)
+* `ZoneList(token)`
 * `ZoneCreate(token, ZoneCreateBody{})`
 * `ZoneUpdate(token, zoneID, mailAddress)`
 * `ZoneDelete(token, zoneID)`
