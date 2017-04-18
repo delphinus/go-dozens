@@ -41,7 +41,7 @@ fully tested and has much reliability.
     return panic(err)
   }
 
-  fmt.Println(zone) // {"domain":[{"id":12345,"name":"example.com"}]}
+  fmt.Printf("%+v", zone) // {Domain:[{ID:12345 Name:example.com}]}
   ```
 
   That's all!
