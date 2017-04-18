@@ -7,8 +7,10 @@ machine:
 
 dependencies:
   pre:
-    - go get github.com/mattn/goveralls
+    - go get github.com/golang/lint/golint
     - go get github.com/jstemmer/go-junit-report
+    - go get github.com/kisielk/errcheck
+    - go get github.com/mattn/goveralls
     - mkdir -p $REPO_PATH
     - rsync -azC --delete ./ $REPO_PATH/
   override:
@@ -16,6 +18,9 @@ dependencies:
 
 test:
   override:
+    - cd $REPO_PATH && go vet   $(glide novendor)
+    - cd $REPO_PATH && golint   $(glide novendor) 2>&1 | xargs -ri sh -c 'echo "{}" && false'
+    - cd $REPO_PATH && errcheck $(glide novendor) 2>&1 | xargs -ri sh -c 'echo "{}" && false'
     - cd $REPO_PATH && set -o pipefail && go test -v -cover -race -coverprofile=$COVERAGE | tee -a $TEST_FILE
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/golang
