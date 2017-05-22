@@ -8,7 +8,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ZoneList returns zones list
+// ZoneList returns zones list.
+//   zone, err := dozens.ZoneList("some token")
+//   if err != nil {
+//     panic(err)
+//   }
+//
+//   fmt.Printf("%+v", zone) // {Domain: [{ID:12345 Name:example.com}]}
 func ZoneList(token string) (ZoneResponse, error) {
 	zoneResp := ZoneResponse{}
 
