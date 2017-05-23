@@ -1,3 +1,12 @@
+// Package dozens is a library for accessing the service Dozens.
+//
+// Dozens ( http://dozens.jp ) is a DNS service that has a simple Web interface
+// and high functionality.  It has published API Reference (
+// http://help.dozens.jp/categories/apiリファレンス/ ) and can be managed from
+// any CLI tools.
+//
+// This package dozens is an implementation for the whole API.  This has been
+// fully tested and has much reliability.
 package dozens
 
 import (
@@ -9,12 +18,18 @@ import (
 	"github.com/pkg/errors"
 )
 
-// AuthorizeResponse means response of authorize
+// AuthorizeResponse means response of authorize.  It has the token string.
 type AuthorizeResponse struct {
 	AuthToken string `json:"auth_token"`
 }
 
-// GetAuthorize returns authorization info
+// GetAuthorize returns authorization info.
+//   resp, err := dozens.GetAuthorize("some key", "some user")
+//   if err != nil {
+//     panic(err)
+//   }
+//
+//   token := resp.AuthToken
 func GetAuthorize(key, user string) (AuthorizeResponse, error) {
 	authorizeResp := AuthorizeResponse{}
 
